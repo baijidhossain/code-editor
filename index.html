@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeMirror Editor with Laravel Syntax Highlighting</title>
+    
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/show-hint.css">
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .CodeMirror {
+            height: 90vh; /* Set editor height */
+            border: 1px solid #ddd; /* Border styling */
+        }
+        button {
+            margin: 10px;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <button id="formatButton">Format Code</button>
+    <textarea id="editor"></textarea>
+
+    <!-- CodeMirror JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/xml/xml.js"></script> <!-- XML mode for HTML -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/php/php.js"></script> <!-- PHP mode -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/show-hint.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/xml-hint.js"></script> <!-- Hint for HTML -->
+    
+    <!-- Include Prettier and its parser for HTML -->
+    <script src="https://cdn.jsdelivr.net/npm/prettier@latest/standalone.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prettier@latest/parser-html.js"></script>
+
+    <script>
+        // Initialize CodeMirror editor for PHP/HTML (Laravel)
+        var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+            lineNumbers: true, // Show line numbers
+            mode: "text/html", // Set the language mode to HTML for Blade
+            theme: "dracula", // Set theme
+            indentUnit: 4, // Set indent size
+            matchBrackets: true, // Highlight matching brackets
+            extraKeys: {
+                "Ctrl-Space": "autocomplete", // Trigger autocomplete
+                "Ctrl-Shift-F": function() { // Format code on Ctrl + Shift + F
+                    formatCode();
+                }
+            }
+        });
+
+        // Set initial Laravel Blade code in the editor
+        editor.setValue(`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laravel Blade Example</title>
+</head>
+<body>
+    <h1>{{ $title }}</h1>
+    <p>This is a paragraph with some <strong>bold text</strong>.</p>
+
+    @if($condition)
+        <p>Condition is true.</p>
+    @else
+        <p>Condition is false.</p>
+    @endif
+</body>
+</html>`);
+
+        // Format code function using Prettier
+        function formatCode() {
+            const unformattedCode = editor.getValue();
+            try {
+                const formattedCode = prettier.format(unformattedCode, {
+                    parser: "html", // Use the HTML parser
+                    plugins: [prettierPlugins.html], // Use only the HTML plugin
+                    singleQuote: true, // Use single quotes for attributes (if applicable)
+                    trailingComma: "none", // No trailing commas
+                    bracketSpacing: true // Add spaces between brackets
+                });
+                editor.setValue(formattedCode); // Set formatted code back to the editor
+            } catch (error) {
+                console.error("Formatting error:", error);
+                alert("Formatting failed: " + error.message);
+            }
+        }
+
+        // Format button event listener
+        document.getElementById('formatButton').addEventListener('click', formatCode);
+    </script>
+</body>
+</html>
