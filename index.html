@@ -9,7 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/show-hint.css">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/fold/foldgutter.css"> <!-- Foldgutter CSS -->
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -38,6 +39,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/php/php.js"></script> <!-- PHP mode -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/show-hint.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/hint/xml-hint.js"></script> <!-- Hint for HTML -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/fold/foldcode.js"></script> <!-- Fold code -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/fold/foldgutter.js"></script> <!-- Fold gutter -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/fold/brace-fold.js"></script> <!-- Brace folding -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/fold/xml-fold.js"></script> <!-- XML folding -->
     
     <!-- Include Prettier and its parser for HTML -->
     <script src="https://cdn.jsdelivr.net/npm/prettier@latest/standalone.js"></script>
@@ -51,10 +56,16 @@
             theme: "dracula", // Set theme
             indentUnit: 4, // Set indent size
             matchBrackets: true, // Highlight matching brackets
+            lineWrapping: true, // Wrap long lines
+            foldGutter: true, // Enable the folding gutter
+            gutters: ["CodeMirror-foldgutter", "CodeMirror-linenumbers"], // Add folding gutter
             extraKeys: {
                 "Ctrl-Space": "autocomplete", // Trigger autocomplete
                 "Ctrl-Shift-F": function() { // Format code on Ctrl + Shift + F
                     formatCode();
+                },
+                "Ctrl-Q": function() { // Toggle folding on Ctrl + Q
+                    editor.foldCode(editor.getCursor());
                 }
             }
         });
